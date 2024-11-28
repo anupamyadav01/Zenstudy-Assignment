@@ -1,9 +1,75 @@
-export const registerUser = (req, res) => {
+import { UserModel } from "../models/userModel.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
+export const registerUser = async (req, res) => {
+  const { name, email, password } = req.body;
   try {
-    console.log(req.body);
+    if (!name || !email || !password) {
+      return res.status(400).send({ message: "All fields are required" });
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: "Invalid email format" });
+    }
+    const existingUser = await UserModel.findOne({ email: email });
+    if (existingUser) {
+      return res.status(409).send({
+        message: "User Already registered with this email",
+      });
+    }
+
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const userData = {
+      name,
+      email,
+      password: hashedPassword,
+    };
+
+    const newUser = await UserModel.create(userData);
+
+    res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
     console.log("Error in register user", error);
-    res.status(404).json({ error: "Unable to register user, try again." });
+    res.status(500).json({ error: "Unable to register user, try again." });
   }
-  res.send("HEllO MVC!!");
+};
+
+export const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    // validate email
+    if (!email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: "Invalid email format" });
+    }
+
+    const user = await UserModel.findOne({ email: email });
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return res.status(401).json({ message: "Invalid password" });
+    }
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+
+    res.cookie("token", token, {
+      path: "/",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+    });
+
+    res.status(200).json({ message: "User logged in successfully" });
+  } catch (error) {
+    console.log("Error in login user", error);
+    res.status(500).json({ error: "Unable to login user, try again." });
+  }
 };

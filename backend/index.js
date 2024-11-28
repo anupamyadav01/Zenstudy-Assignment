@@ -1,13 +1,13 @@
 import express from "express";
 import { userRoutes } from "./routes/userRoutes.js";
+import { connectToDB } from "./utils/connectToDB.js";
 
 const app = express();
 const PORT = 10000;
 
 app.use(express.json());
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+
+connectToDB();
 
 app.use("/api/user", userRoutes);
 
