@@ -1,5 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 import { CameraAlt } from "@mui/icons-material";
+import axios from "axios";
 import {
   Avatar,
   Button,
@@ -14,6 +15,16 @@ import { useState } from "react";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [loginData, setLoginData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [registerData, setRegisterData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
   const [avatar, setAvatar] = useState(null);
 
   const toggleLogin = () => {
@@ -27,10 +38,38 @@ const Login = () => {
     }
   };
 
-  const handleFormSubmit = (event) => {
+  const handleLoginUser = (event) => {
     event.preventDefault();
-    // Add form handling logic here
+    try {
+      const response = axios.post(
+        "http://localhost:10000/api/user/login",
+        loginData,
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
   };
+  const handleRegisterUser = async () => {
+    event.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:10000/api/user/register",
+        registerData,
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  console.log(loginData);
 
   return (
     <Container
@@ -44,7 +83,7 @@ const Login = () => {
       }}
     >
       <Paper
-        elevation={3}
+        elevation={6}
         sx={{
           padding: 4,
           display: "flex",
@@ -52,9 +91,9 @@ const Login = () => {
           alignItems: "center",
           justifyContent: "center",
           borderRadius: 3,
-          boxShadow: "0px 4px 5px rgba(0,0,0,0.1)",
-          width: "70%",
-          maxWidth: 420,
+          transition: "width 0.3s ease-in-out", // Smooth animation
+          width: isLogin ? "400px" : "740px", // Dynamic width based on state
+          maxWidth: "100%",
         }}
       >
         {isLogin ? (
@@ -73,19 +112,25 @@ const Login = () => {
 
             <form
               style={{ width: "100%", marginTop: 2 }}
-              onSubmit={handleFormSubmit}
+              onSubmit={handleLoginUser}
             >
               <Typography sx={{ fontSize: "0.9rem", marginBottom: 1 }}>
                 Login with your username and password
               </Typography>
               <TextField
+                onChange={(e) =>
+                  setLoginData({ ...loginData, email: e.target.value })
+                }
                 required
                 fullWidth
-                label="Username"
+                label="Email"
                 margin="normal"
                 variant="outlined"
               />
               <TextField
+                onChange={(e) =>
+                  setLoginData({ ...loginData, password: e.target.value })
+                }
                 required
                 fullWidth
                 label="Password"
@@ -144,30 +189,29 @@ const Login = () => {
             >
               Sign Up
             </Typography>
-
-            <form
-              style={{
+            <Stack
+              direction="row"
+              spacing={4}
+              sx={{
                 width: "100%",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
               }}
-              onSubmit={handleFormSubmit}
             >
+              {/* Avatar Section */}
               <Stack
                 direction="column"
                 alignItems="center"
                 spacing={2}
-                sx={{
-                  marginBottom: 3,
-                  position: "relative", // Added to position the camera icon
-                }}
+                position={"relative"}
+                sx={{ flex: 1 }}
               >
                 <Avatar
                   sx={{
-                    width: 160, // Increased the size
+                    width: 160,
                     height: 160,
                     objectFit: "cover",
+                    marginBottom: 2,
                   }}
                   src={
                     avatar ||
@@ -179,12 +223,11 @@ const Login = () => {
                   component="label"
                   sx={{
                     position: "absolute",
-                    bottom: 0,
-                    right: 0,
-                    transform: "translate(50%, 50%)", // Adjusts positioning to fully overlap bottom-right
-                    backgroundColor: "rgba(255, 255, 255, 0.8)", // Subtle background for better visibility
+                    bottom: 6,
+                    right: 6,
+                    backgroundColor: "rgba(255, 255, 255, 0.8)",
                     borderRadius: "50%",
-                    boxShadow: "0px 4px 6px rgba(0,0,0,0.1)", // Slight shadow for a raised effect
+                    boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
                     padding: "6px",
                   }}
                 >
@@ -198,72 +241,94 @@ const Login = () => {
                 </IconButton>
               </Stack>
 
-              <TextField
-                required
-                fullWidth
-                label="Full Name"
-                margin="normal"
-                variant="outlined"
-              />
-              <TextField
-                required
-                fullWidth
-                label="Username"
-                margin="normal"
-                variant="outlined"
-              />
-              <TextField
-                required
-                fullWidth
-                label="Bio"
-                margin="normal"
-                variant="outlined"
-              />
-              <TextField
-                required
-                fullWidth
-                label="Password"
-                type="password"
-                margin="normal"
-                variant="outlined"
-              />
-
-              <Button
-                type="submit"
-                sx={{
-                  marginTop: 2,
-                  fontWeight: "bold",
-                  fontSize: "1rem",
-                  width: "100%",
+              {/* Form Section */}
+              <form
+                style={{
+                  flex: 2,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
                 }}
-                variant="contained"
-                color="primary"
+                onSubmit={handleRegisterUser}
               >
-                Sign Up
-              </Button>
-              <Typography
-                sx={{
-                  textAlign: "center",
-                  marginTop: 2,
-                  fontSize: "0.9rem",
-                  color: "text.secondary",
-                }}
-              >
-                Already have an account?
+                <TextField
+                  onChange={(e) =>
+                    setRegisterData({ ...registerData, name: e.target.value })
+                  }
+                  required
+                  fullWidth
+                  label="Full Name"
+                  margin="normal"
+                  variant="outlined"
+                />
+                <TextField
+                  onChange={(e) =>
+                    setRegisterData({ ...registerData, email: e.target.value })
+                  }
+                  required
+                  fullWidth
+                  label="Username"
+                  margin="normal"
+                  variant="outlined"
+                />
+                <TextField
+                  required
+                  fullWidth
+                  label="Bio"
+                  margin="normal"
+                  variant="outlined"
+                />
+                <TextField
+                  onChange={(e) =>
+                    setRegisterData({
+                      ...registerData,
+                      password: e.target.value,
+                    })
+                  }
+                  required
+                  fullWidth
+                  label="Password"
+                  type="password"
+                  margin="normal"
+                  variant="outlined"
+                />
                 <Button
-                  onClick={toggleLogin}
-                  color="secondary"
+                  type="submit"
                   sx={{
-                    textTransform: "none",
-                    fontWeight: "semibold",
-                    padding: 0,
-                    marginLeft: -1,
+                    marginTop: 2,
+                    fontWeight: "bold",
+                    fontSize: "1rem",
+                    width: "100%",
+                  }}
+                  variant="contained"
+                  color="primary"
+                >
+                  Sign Up
+                </Button>
+                <Typography
+                  sx={{
+                    textAlign: "center",
+                    marginTop: 2,
+                    fontSize: "0.9rem",
+                    color: "text.secondary",
                   }}
                 >
-                  Login
-                </Button>
-              </Typography>
-            </form>
+                  Already have an account?
+                  <Button
+                    onClick={toggleLogin}
+                    color="secondary"
+                    sx={{
+                      textTransform: "none",
+                      fontWeight: "semibold",
+                      padding: 0,
+                      marginLeft: -1,
+                    }}
+                  >
+                    Login
+                  </Button>
+                </Typography>
+              </form>
+            </Stack>
           </>
         )}
       </Paper>
