@@ -12,8 +12,13 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ThreeDots } from "react-loader-spinner";
+import toast, { Toaster } from "react-hot-toast";
 
 const Login = () => {
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [loginData, setLoginData] = useState({
     email: "",
@@ -38,10 +43,11 @@ const Login = () => {
     }
   };
 
-  const handleLoginUser = (event) => {
+  const handleLoginUser = async (event) => {
     event.preventDefault();
     try {
-      const response = axios.post(
+      setLoading(true);
+      const response = await axios.post(
         "http://localhost:10000/api/user/login",
         loginData,
         {
@@ -49,13 +55,22 @@ const Login = () => {
         }
       );
       console.log(response);
+      if (response.status === 200) {
+        setLoading(false);
+        toast.success("User logged in successfully");
+        setLoginData({ email: "", password: "" });
+        navigate("/dashboard");
+      }
     } catch (error) {
+      setLoading(false);
       console.log(error);
+      toast.error(error.response.data.message);
     }
   };
-  const handleRegisterUser = async () => {
-    event.preventDefault();
+  const handleRegisterUser = async (e) => {
+    e.preventDefault();
     try {
+      setLoading(true);
       const response = await axios.post(
         "http://localhost:10000/api/user/register",
         registerData,
@@ -64,12 +79,18 @@ const Login = () => {
         }
       );
       console.log(response);
+      if (response.status === 201) {
+        setLoading(false);
+        toast.success("User registered successfully");
+        setRegisterData({ name: "", email: "", password: "" });
+        setIsLogin(true);
+      }
     } catch (error) {
+      setLoading(false);
       console.log(error);
+      toast.error(error.response.data.message);
     }
   };
-
-  console.log(loginData);
 
   return (
     <Container
@@ -82,6 +103,7 @@ const Login = () => {
         justifyContent: "center",
       }}
     >
+      <Toaster />
       <Paper
         elevation={6}
         sx={{
@@ -114,8 +136,13 @@ const Login = () => {
               style={{ width: "100%", marginTop: 2 }}
               onSubmit={handleLoginUser}
             >
-              <Typography sx={{ fontSize: "0.9rem", marginBottom: 1 }}>
-                Login with your username and password
+              <Typography
+                sx={{
+                  textAlign: "center",
+                  marginBottom: 1,
+                }}
+              >
+                Login with your Email and Password
               </Typography>
               <TextField
                 onChange={(e) =>
@@ -150,7 +177,18 @@ const Login = () => {
                 variant="contained"
                 color="primary"
               >
-                Login
+                {loading ? (
+                  <ThreeDots
+                    visible={true}
+                    height="50"
+                    width="50"
+                    color="white"
+                    radius="9"
+                    ariaLabel="three-dots-loading"
+                  />
+                ) : (
+                  "Login"
+                )}
               </Button>
 
               <Typography
@@ -267,7 +305,7 @@ const Login = () => {
                   }
                   required
                   fullWidth
-                  label="Username"
+                  label="Email"
                   margin="normal"
                   variant="outlined"
                 />
@@ -303,7 +341,18 @@ const Login = () => {
                   variant="contained"
                   color="primary"
                 >
-                  Sign Up
+                  {loading ? (
+                    <ThreeDots
+                      visible={true}
+                      height="50"
+                      width="50"
+                      color="white"
+                      radius="9"
+                      ariaLabel="three-dots-loading"
+                    />
+                  ) : (
+                    "Sign Up"
+                  )}
                 </Button>
                 <Typography
                   sx={{

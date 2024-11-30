@@ -5,6 +5,8 @@ import jwt from "jsonwebtoken";
 export const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
   try {
+    console.log(req.body);
+
     if (!name || !email || !password) {
       return res.status(400).send({ message: "All fields are required" });
     }
@@ -71,5 +73,15 @@ export const loginUser = async (req, res) => {
   } catch (error) {
     console.log("Error in login user", error);
     res.status(500).json({ error: "Unable to login user, try again." });
+  }
+};
+
+export const logoutUser = async (req, res) => {
+  try {
+    res.clearCookie("token");
+    res.status(200).json({ message: "User logged out successfully" });
+  } catch (error) {
+    console.log("Error in logout user", error);
+    res.status(500).json({ error: "Unable to logout user, try again." });
   }
 };

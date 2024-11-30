@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion"; // Import Framer Motion
 import { FiX } from "react-icons/fi";
+import axios from "axios";
 
 const AddContact = ({ setShowAddContact }) => {
   const [contact, setContact] = useState({
@@ -21,12 +22,24 @@ const AddContact = ({ setShowAddContact }) => {
     setContact({ ...contact, image: file ? URL.createObjectURL(file) : "" });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("New Contact:", contact);
-    setContact({ name: "", email: "", phone: "", image: "" }); // Reset the form
-  };
+    console.log("Submit");
 
+    try {
+      const response = await axios.post(
+        `http://localhost:10000/api/contact/addContact`,
+        contact,
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(response);
+      // setContact({ name: "", email: "", phone: "", image: "" });
+    } catch (error) {
+      console.error("Error adding contact:", error);
+    }
+  };
   const handleClose = () => {
     setShowAddContact(false);
   };
@@ -146,10 +159,7 @@ const AddContact = ({ setShowAddContact }) => {
 
         {/* Submit Button */}
         <div className="text-center">
-          <button
-            type="submit"
-            className="bg-violet-500 text-white px-6 py-2 rounded-lg font-medium hover:bg-violet-600 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 transition duration-200"
-          >
+          <button className="bg-violet-500 text-white px-6 py-2 rounded-lg font-medium hover:bg-violet-600 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 transition duration-200">
             Add Contact
           </button>
         </div>
