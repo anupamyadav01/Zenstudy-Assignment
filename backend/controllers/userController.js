@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 
 export const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
+  const imgURL = req.secure_url;
   try {
     console.log(req.body);
 
@@ -27,6 +28,7 @@ export const registerUser = async (req, res) => {
       name,
       email,
       password: hashedPassword,
+      image: imgURL || "",
     };
 
     const newUser = await UserModel.create(userData);
@@ -69,7 +71,7 @@ export const loginUser = async (req, res) => {
       sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
     });
 
-    res.status(200).json({ message: "User logged in successfully" });
+    res.status(200).json({ message: "User logged in successfully", user });
   } catch (error) {
     console.log("Error in login user", error);
     res.status(500).json({ error: "Unable to login user, try again." });
@@ -83,5 +85,18 @@ export const logoutUser = async (req, res) => {
   } catch (error) {
     console.log("Error in logout user", error);
     res.status(500).json({ error: "Unable to logout user, try again." });
+  }
+};
+export const getLoggedInUser = async (req, res) => {
+  const user = req.user;
+  try {
+    const data = await UserModel.findById(user?._id);
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+    res.status(200).json({ user });
+  } catch (error) {
+    console.log("Error in get logged in user", error);
+    res.status(500).json({ error: "Unable to get logged in user, try again." });
   }
 };

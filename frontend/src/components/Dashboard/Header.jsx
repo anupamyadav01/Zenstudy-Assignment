@@ -1,16 +1,17 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { FaSearch, FaSignOutAlt } from "react-icons/fa";
 import AnimatedButton from "./AnimatedButton";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import { LoggedInUserContext } from "../../App";
 
 const Header = ({ onLogout }) => {
+  const { loggedInUser } = useContext(LoggedInUserContext);
   const navigate = useNavigate();
   const logoutUser = async (e) => {
     e.preventDefault();
-    console.log("logout");
     try {
       const response = await axios.post(
         `http://localhost:10000/api/user/logout`,
@@ -19,7 +20,6 @@ const Header = ({ onLogout }) => {
           withCredentials: true,
         }
       );
-      console.log(response);
       if (response.status === 200) {
         toast.success("User logged out successfully");
         navigate("/");
@@ -28,22 +28,28 @@ const Header = ({ onLogout }) => {
       console.log(error);
     }
   };
-  const userName = "Alice Johnson";
   return (
     <nav className=" shadow-md fixed top-0 z-50 px-4 py-3 w-full bg-white">
       <Toaster />
       <div className="w-full flex items-center justify-between">
         <div className="text-xl font-medium text-gray-800">
-          Hii, {userName}!
+          Hii, {loggedInUser?.name}!
         </div>
         <Search />
-        <span onClick={logoutUser}>
-          <AnimatedButton
-            icon={FaSignOutAlt}
-            name="Logout"
-            onLogout={onLogout}
+        <div className="flex items-center justify-center gap-4">
+          <img
+            src={loggedInUser?.image}
+            alt={loggedInUser?.name}
+            className="h-12 w-12 rounded-full object-cover hover:scale-105 duration-200 ease-out"
           />
-        </span>
+          <span onClick={logoutUser}>
+            <AnimatedButton
+              icon={FaSignOutAlt}
+              name="Logout"
+              onLogout={onLogout}
+            />
+          </span>
+        </div>
       </div>
     </nav>
   );

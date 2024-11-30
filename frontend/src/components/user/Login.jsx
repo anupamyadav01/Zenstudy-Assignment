@@ -11,10 +11,11 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ThreeDots } from "react-loader-spinner";
 import toast, { Toaster } from "react-hot-toast";
+import { LoggedInUserContext } from "../../App";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -24,11 +25,13 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const { setLoggedInUser } = useContext(LoggedInUserContext);
 
   const [registerData, setRegisterData] = useState({
     name: "",
     email: "",
     password: "",
+    image: "",
   });
   const [avatar, setAvatar] = useState(null);
 
@@ -40,6 +43,13 @@ const Login = () => {
     const file = event.target.files[0];
     if (file) {
       setAvatar(URL.createObjectURL(file));
+    }
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setRegisterData({ ...registerData, image: e.target.result });
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -54,8 +64,9 @@ const Login = () => {
           withCredentials: true,
         }
       );
-      console.log(response);
+
       if (response.status === 200) {
+        setLoggedInUser(response?.data?.user);
         setLoading(false);
         toast.success("User logged in successfully");
         setLoginData({ email: "", password: "" });

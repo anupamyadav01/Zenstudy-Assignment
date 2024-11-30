@@ -7,7 +7,6 @@ import { FaPlus } from "react-icons/fa";
 import { FiEdit, FiTrash } from "react-icons/fi";
 import AddContact from "../components/Dashboard/AddContact";
 import axios from "axios";
-
 const Dashboard = ({ onLogout }) => {
   const [showAddContact, setShowAddContact] = useState(false);
   const [contacts, setContacts] = useState([]);
@@ -39,7 +38,7 @@ const Dashboard = ({ onLogout }) => {
       }
     };
     fetchContacts();
-  }, [contacts]);
+  }, []);
 
   const deleteContact = async (id) => {
     try {
@@ -73,7 +72,7 @@ const Dashboard = ({ onLogout }) => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Header user={user} onLogout={onLogout} />
+      <Header onLogout={onLogout} />
 
       <main className="p-6 mt-16 z-10 relative">
         {showAddContact && (
@@ -120,52 +119,66 @@ const Dashboard = ({ onLogout }) => {
         </section>
 
         <section className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold text-gray-700">Your Contacts</h2>
+          <h2 className="text-xl font-semibold text-gray-700 text-center">
+            Your Contacts
+          </h2>
           <div onClick={toggleAddContact}>
             <AnimatedButton icon={FaPlus} name="Add Contact" />
           </div>
         </section>
 
         <section className="space-y-6">
-          <div className="grid grid-cols-5 items-center text-center justify-center bg-gray-200 p-4 px-10 rounded-t-lg text-gray-700 font-semibold">
-            <span>Profile Picture</span>
-            <span>Name</span>
-            <span>Email</span>
-            <span>Phone</span>
-            <span>Actions</span>
-          </div>
-
-          {contacts.map((contact, index) => (
-            <div
-              key={index}
-              className="grid grid-cols-5 items-center bg-white shadow p-4 rounded-lg border-b border-gray-200"
-            >
-              <div className="flex justify-center">
-                <img
-                  src={contact.image}
-                  alt={contact.name}
-                  className="h-16 w-16 rounded-full object-cover"
-                />
-              </div>
-
-              <p className="text-center text-lg font-medium text-gray-800">
-                {contact.name}
-              </p>
-
-              <p className="text-center text-gray-600">{contact.email}</p>
-
-              <p className="text-center text-gray-600">{contact.phone}</p>
-
-              <div className="flex justify-center space-x-4">
-                <span onClick={() => editContact(contact)}>
-                  <AnimatedButton icon={FiEdit} name="Edit" />
-                </span>
-                <span onClick={() => handleDeleteClick(contact?._id)}>
-                  <AnimatedButton icon={FiTrash} name="Delete" />
-                </span>
-              </div>
+          {contacts.length > 0 && (
+            <div className="grid grid-cols-5 items-center text-center justify-center bg-gray-200 p-4 px-10 rounded-t-lg text-gray-700 font-semibold">
+              <span>Profile Picture</span>
+              <span>Name</span>
+              <span>Email</span>
+              <span>Phone</span>
+              <span>Actions</span>
             </div>
-          ))}
+          )}
+
+          {contacts?.length > 0 ? (
+            contacts?.map((contact, index) => (
+              <div
+                key={index}
+                className="grid grid-cols-5 items-center bg-white shadow p-4 rounded-lg border-b border-gray-200"
+              >
+                <div className="flex justify-center">
+                  <img
+                    src={contact.image}
+                    alt={contact.name}
+                    className="h-16 w-16 rounded-full object-cover"
+                  />
+                </div>
+
+                <p className="text-center text-lg font-medium text-gray-800">
+                  {contact.name}
+                </p>
+
+                <p className="text-center text-gray-600">{contact.email}</p>
+
+                <p className="text-center text-gray-600">{contact.phone}</p>
+
+                <div className="flex justify-center space-x-4">
+                  <span onClick={() => editContact(contact)}>
+                    <AnimatedButton icon={FiEdit} name="Edit" />
+                  </span>
+                  <span onClick={() => handleDeleteClick(contact?._id)}>
+                    <AnimatedButton icon={FiTrash} name="Delete" />
+                  </span>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="flex justify-center items-center">
+              <img
+                src="https://lh5.googleusercontent.com/proxy/wdw47cv6IDrBTf8RdQd1XpJdcsBHT1sk2TZzfbg_HX3Lm3ZKZUTs0JFRKD8w5URBu0bQZAqF4tCheQ"
+                alt={"no data found"}
+                className="h-80 w-96 object-cover"
+              />
+            </div>
+          )}
         </section>
       </main>
     </div>
