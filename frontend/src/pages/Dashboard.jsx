@@ -1,5 +1,6 @@
-/* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
+
+import { PropTypes } from "prop-types";
 import AnimatedButton from "../components/Dashboard/AnimatedButton";
 import Header from "../components/Dashboard/Header";
 import { FaPlus } from "react-icons/fa";
@@ -11,6 +12,8 @@ const Dashboard = ({ onLogout }) => {
   const [showAddContact, setShowAddContact] = useState(false);
   const [contacts, setContacts] = useState([]);
   const [selectedContact, setSelectedContact] = useState(null);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [contactToDelete, setContactToDelete] = useState(null);
 
   const user = {
     name: "Alice Johnson",
@@ -47,6 +50,7 @@ const Dashboard = ({ onLogout }) => {
         }
       );
       setContacts(contacts.filter((contact) => contact._id !== id)); // Update state
+      setShowDeletePopup(false);
     } catch (error) {
       console.log("Error deleting contact", error);
     }
@@ -55,6 +59,16 @@ const Dashboard = ({ onLogout }) => {
   const editContact = (contact) => {
     setSelectedContact(contact);
     setShowAddContact(true);
+  };
+
+  const handleDeleteClick = (id) => {
+    setContactToDelete(id);
+    setShowDeletePopup(true);
+  };
+
+  const handleCancelDelete = () => {
+    setContactToDelete(null);
+    setShowDeletePopup(false);
   };
 
   return (
@@ -71,6 +85,31 @@ const Dashboard = ({ onLogout }) => {
             />
           </div>
         )}
+
+        {showDeletePopup && (
+          <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm">
+              <h2 className="text-lg font-semibold text-gray-700 mb-4">
+                Are you sure you want to delete this contact?
+              </h2>
+              <div className="flex justify-end space-x-4">
+                <button
+                  onClick={handleCancelDelete}
+                  className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium px-4 py-2 rounded-lg"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => deleteContact(contactToDelete)}
+                  className="bg-red-500 hover:bg-red-600 text-white font-medium px-4 py-2 rounded-lg"
+                >
+                  Confirm
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <section className="mb-8">
           <h1 className="text-3xl font-bold text-gray-700">
             Welcome, {user.name}!
@@ -121,7 +160,7 @@ const Dashboard = ({ onLogout }) => {
                 <span onClick={() => editContact(contact)}>
                   <AnimatedButton icon={FiEdit} name="Edit" />
                 </span>
-                <span onClick={() => deleteContact(contact?._id)}>
+                <span onClick={() => handleDeleteClick(contact?._id)}>
                   <AnimatedButton icon={FiTrash} name="Delete" />
                 </span>
               </div>
@@ -131,6 +170,10 @@ const Dashboard = ({ onLogout }) => {
       </main>
     </div>
   );
+};
+
+Dashboard.propTypes = {
+  onLogout: PropTypes.func,
 };
 
 export default Dashboard;
