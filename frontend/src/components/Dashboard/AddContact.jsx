@@ -1,16 +1,26 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
-import { motion } from "framer-motion"; // Import Framer Motion
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { FiX } from "react-icons/fi";
 import axios from "axios";
 
-const AddContact = ({ setShowAddContact }) => {
+const AddContact = ({
+  setShowAddContact,
+  selectedContact,
+  setSelectedContact,
+}) => {
   const [contact, setContact] = useState({
     name: "",
     email: "",
     phone: "",
     image: "",
   });
+
+  useEffect(() => {
+    if (selectedContact) {
+      setContact(selectedContact);
+    }
+  }, [selectedContact]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -29,7 +39,7 @@ const AddContact = ({ setShowAddContact }) => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const addContact = async (e) => {
     e.preventDefault();
     console.log("Submit");
 
@@ -42,23 +52,50 @@ const AddContact = ({ setShowAddContact }) => {
         }
       );
       console.log(response);
-      // setContact({ name: "", email: "", phone: "", image: "" });
+      // Reset form after adding
+      setContact({ name: "", email: "", phone: "", image: "" });
     } catch (error) {
       console.error("Error adding contact:", error);
     }
   };
-  const handleClose = () => {
-    setShowAddContact(false);
+
+  const updateContact = async (e) => {
+    e.preventDefault();
+    console.log("Update");
+
+    try {
+      const response = await axios.put(
+        `http://localhost:10000/api/contact/updateContact/${selectedContact._id}`,
+        contact,
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(response);
+      setContact({ name: "", email: "", phone: "", image: "" });
+      setSelectedContact(null);
+      setShowAddContact(false);
+    } catch (error) {
+      console.error("Error updating contact:", error);
+    }
   };
 
-  // Animation Variants
+  const handleClose = () => {
+    setShowAddContact(false);
+    setContact({
+      name: "",
+      email: "",
+      phone: "",
+      image: "",
+    });
+    setSelectedContact(null);
+  };
+
   const formVariants = {
     hidden: { opacity: 0, scale: 0.9, y: 50 },
     visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.5 } },
     exit: { opacity: 0, scale: 0.9, y: -50, transition: { duration: 0.3 } },
   };
-
-  console.log(contact);
 
   return (
     <motion.div
@@ -78,9 +115,9 @@ const AddContact = ({ setShowAddContact }) => {
       </button>
 
       <h2 className="text-2xl font-semibold text-gray-800 text-center mb-4">
-        Add New Contact
+        {selectedContact ? "Edit Contact" : "Add New Contact"}
       </h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form className="space-y-4">
         {/* Name */}
         <div>
           <label
@@ -166,11 +203,24 @@ const AddContact = ({ setShowAddContact }) => {
           )}
         </div>
 
-        {/* Submit Button */}
         <div className="text-center">
-          <button className="bg-violet-500 text-white px-6 py-2 rounded-lg font-medium hover:bg-violet-600 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 transition duration-200">
-            Add Contact
-          </button>
+          {selectedContact ? (
+            <button
+              onClick={updateContact}
+              type="submit"
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              Update Contact
+            </button>
+          ) : (
+            <button
+              onClick={addContact}
+              type="submit"
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              Add Contact
+            </button>
+          )}
         </div>
       </form>
     </motion.div>

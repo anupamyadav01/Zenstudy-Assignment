@@ -10,10 +10,13 @@ import axios from "axios";
 const Dashboard = ({ onLogout }) => {
   const [showAddContact, setShowAddContact] = useState(false);
   const [contacts, setContacts] = useState([]);
+  const [selectedContact, setSelectedContact] = useState(null);
+
   const user = {
     name: "Alice Johnson",
     image: "https://via.placeholder.com/150",
   };
+
   const toggleAddContact = () => {
     setShowAddContact(!showAddContact);
   };
@@ -27,16 +30,32 @@ const Dashboard = ({ onLogout }) => {
             withCredentials: true,
           }
         );
-        console.log(response);
         setContacts(response?.data);
       } catch (error) {
         console.log("Error getting contacts", error);
       }
     };
     fetchContacts();
-  }, []);
+  }, [contacts]);
 
-  console.log(contacts);
+  const deleteContact = async (id) => {
+    try {
+      await axios.delete(
+        `http://localhost:10000/api/contact/deleteContact/${id}`,
+        {
+          withCredentials: true,
+        }
+      );
+      setContacts(contacts.filter((contact) => contact._id !== id)); // Update state
+    } catch (error) {
+      console.log("Error deleting contact", error);
+    }
+  };
+
+  const editContact = (contact) => {
+    setSelectedContact(contact);
+    setShowAddContact(true);
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -45,7 +64,11 @@ const Dashboard = ({ onLogout }) => {
       <main className="p-6 mt-16 z-10 relative">
         {showAddContact && (
           <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
-            <AddContact setShowAddContact={setShowAddContact} />
+            <AddContact
+              setShowAddContact={setShowAddContact}
+              selectedContact={selectedContact}
+              setSelectedContact={setSelectedContact}
+            />
           </div>
         )}
         <section className="mb-8">
@@ -82,7 +105,7 @@ const Dashboard = ({ onLogout }) => {
                 <img
                   src={contact.image}
                   alt={contact.name}
-                  className="h-20 w-20 rounded-full object-cover"
+                  className="h-16 w-16 rounded-full object-cover"
                 />
               </div>
 
@@ -95,8 +118,12 @@ const Dashboard = ({ onLogout }) => {
               <p className="text-center text-gray-600">{contact.phone}</p>
 
               <div className="flex justify-center space-x-4">
-                <AnimatedButton icon={FiEdit} name="Edit" />
-                <AnimatedButton icon={FiTrash} name="Delete" />
+                <span onClick={() => editContact(contact)}>
+                  <AnimatedButton icon={FiEdit} name="Edit" />
+                </span>
+                <span onClick={() => deleteContact(contact?._id)}>
+                  <AnimatedButton icon={FiTrash} name="Delete" />
+                </span>
               </div>
             </div>
           ))}

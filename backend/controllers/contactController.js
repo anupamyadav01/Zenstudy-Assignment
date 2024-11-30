@@ -32,3 +32,60 @@ export const getAllContacts = async (req, res) => {
     res.status(500).json({ error: "Unable to get all contacts, try again." });
   }
 };
+
+export const deleteContactById = async (req, res) => {
+  const { id } = req.params;
+  const user = req.user;
+
+  try {
+    const updatedUser = await UserModel.findOneAndUpdate(
+      { _id: user._id },
+      { $pull: { contacts: { _id: id } } },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json({
+      message: "Contact deleted successfully",
+      contacts: updatedUser.contacts,
+    });
+  } catch (error) {
+    console.error("Error in delete contact:", error);
+    res.status(500).json({ error: "Unable to delete contact, try again." });
+  }
+};
+
+export const updateContactById = async (req, res) => {
+  const { name, email, phone, image } = req.body;
+  const { id } = req.params;
+
+  try {
+    const updatedUser = await UserModel.findOneAndUpdate(
+      { "contacts._id": id },
+      {
+        $set: {
+          "contacts.$.name": name,
+          "contacts.$.email": email,
+          "contacts.$.phone": phone,
+          "contacts.$.image": image || "",
+        },
+      },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "Contact not found" });
+    }
+
+    res.status(200).json({
+      message: "Contact updated successfully",
+      updatedUser,
+    });
+  } catch (error) {
+    console.error("Error in update contact:", error);
+    res.status(500).json({ error: "Unable to update contact, try again." });
+  }
+};
