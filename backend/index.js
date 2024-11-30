@@ -9,7 +9,7 @@ const PORT = 10000;
 app.use(express.json({ limit: "50mb" }));
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://zenstudy-assignment.vercel.app"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],

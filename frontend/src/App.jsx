@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Login from "./components/user/Login";
 import Dashboard from "./pages/Dashboard";
 import { createContext, useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../axiosConfig";
 
 export const LoggedInUserContext = createContext(null);
 const App = () => {
@@ -11,12 +11,7 @@ const App = () => {
   useEffect(() => {
     const getLoggedInUser = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:10000/api/user/getLoggedInUser",
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axiosInstance.get("/user/getLoggedInUser");
         if (response.status === 200) {
           setLoggedInUser(response.data.user);
         } else {

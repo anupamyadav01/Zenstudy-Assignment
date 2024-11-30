@@ -1,6 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
 import { CameraAlt } from "@mui/icons-material";
-import axios from "axios";
 import {
   Avatar,
   Button,
@@ -16,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { ThreeDots } from "react-loader-spinner";
 import toast, { Toaster } from "react-hot-toast";
 import { LoggedInUserContext } from "../../App";
+import axiosInstance from "../../../axiosConfig";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -57,13 +57,7 @@ const Login = () => {
     event.preventDefault();
     try {
       setLoading(true);
-      const response = await axios.post(
-        "http://localhost:10000/api/user/login",
-        loginData,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axiosInstance.post("/user/login", loginData);
 
       if (response.status === 200) {
         setLoggedInUser(response?.data?.user);
@@ -82,13 +76,7 @@ const Login = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const response = await axios.post(
-        "http://localhost:10000/api/user/register",
-        registerData,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axiosInstance.post("/user/register", registerData);
       console.log(response);
       if (response.status === 201) {
         setLoading(false);
@@ -239,12 +227,12 @@ const Login = () => {
               Sign Up
             </Typography>
             <Stack
-              direction="row"
-              spacing={4}
+              direction={{ xs: "column", sm: "row" }} // Column for mobile, row for larger screens
+              spacing={{ xs: 2, sm: 4 }} // Adjust spacing for mobile vs larger screens
               sx={{
                 width: "100%",
                 justifyContent: "space-between",
-                alignItems: "flex-start",
+                alignItems: { xs: "center", sm: "flex-start" },
               }}
             >
               {/* Avatar Section */}
@@ -252,15 +240,16 @@ const Login = () => {
                 direction="column"
                 alignItems="center"
                 spacing={2}
-                position={"relative"}
-                sx={{ flex: 1 }}
+                sx={{
+                  flex: 1,
+                }}
               >
                 <Avatar
                   sx={{
                     width: 160,
                     height: 160,
                     objectFit: "cover",
-                    marginBottom: 2,
+                    marginBottom: { xs: 2, sm: 0 }, // Add spacing below avatar for mobile
                   }}
                   src={
                     avatar ||
@@ -271,9 +260,6 @@ const Login = () => {
                 <IconButton
                   component="label"
                   sx={{
-                    position: "absolute",
-                    bottom: 6,
-                    right: 6,
                     backgroundColor: "rgba(255, 255, 255, 0.8)",
                     borderRadius: "50%",
                     boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
@@ -296,7 +282,7 @@ const Login = () => {
                   flex: 2,
                   display: "flex",
                   flexDirection: "column",
-                  justifyContent: "space-between",
+                  width: "100%",
                 }}
                 onSubmit={handleRegisterUser}
               >
@@ -348,6 +334,7 @@ const Login = () => {
                     fontWeight: "bold",
                     fontSize: "1rem",
                     width: "100%",
+                    order: { xs: 3, sm: 0 }, // Place buttons last on mobile
                   }}
                   variant="contained"
                   color="primary"

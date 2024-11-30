@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FiX } from "react-icons/fi";
-import axios from "axios";
+import axiosInstance from "../../../axiosConfig";
 
 const AddContact = ({
   setShowAddContact,
@@ -44,15 +44,8 @@ const AddContact = ({
     console.log("Submit");
 
     try {
-      const response = await axios.post(
-        `http://localhost:10000/api/contact/addContact`,
-        contact,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axiosInstance.post(`/contact/addContact`, contact);
       console.log(response);
-      // Reset form after adding
       setContact({ name: "", email: "", phone: "", image: "" });
     } catch (error) {
       console.error("Error adding contact:", error);
@@ -64,12 +57,9 @@ const AddContact = ({
     console.log("Update");
 
     try {
-      const response = await axios.put(
-        `http://localhost:10000/api/contact/updateContact/${selectedContact._id}`,
-        contact,
-        {
-          withCredentials: true,
-        }
+      const response = await axiosInstance.put(
+        `/contact/updateContact/${selectedContact._id}`,
+        contact
       );
       console.log(response);
       setContact({ name: "", email: "", phone: "", image: "" });

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import { PropTypes } from "prop-types";
 import AnimatedButton from "../components/Dashboard/AnimatedButton";
 import Header from "../components/Dashboard/Header";
@@ -7,6 +6,7 @@ import { FaPlus } from "react-icons/fa";
 import { FiEdit, FiTrash } from "react-icons/fi";
 import AddContact from "../components/Dashboard/AddContact";
 import axios from "axios";
+
 const Dashboard = ({ onLogout }) => {
   const [showAddContact, setShowAddContact] = useState(false);
   const [contacts, setContacts] = useState([]);
@@ -129,7 +129,7 @@ const Dashboard = ({ onLogout }) => {
 
         <section className="space-y-6">
           {contacts.length > 0 && (
-            <div className="grid grid-cols-5 items-center text-center justify-center bg-gray-200 p-4 px-10 rounded-t-lg text-gray-700 font-semibold">
+            <div className="hidden sm:grid grid-cols-5 items-center text-center bg-gray-200 p-4 px-10 rounded-t-lg text-gray-700 font-semibold">
               <span>Profile Picture</span>
               <span>Name</span>
               <span>Email</span>
@@ -142,7 +142,7 @@ const Dashboard = ({ onLogout }) => {
             contacts?.map((contact, index) => (
               <div
                 key={index}
-                className="grid grid-cols-5 items-center bg-white shadow p-4 rounded-lg border-b border-gray-200"
+                className="grid grid-cols-1 sm:grid-cols-5 items-center bg-white shadow p-4 rounded-lg border-b border-gray-200"
               >
                 <div className="flex justify-center">
                   <img
@@ -152,20 +152,35 @@ const Dashboard = ({ onLogout }) => {
                   />
                 </div>
 
-                <p className="text-center text-lg font-medium text-gray-800">
+                {/* Name */}
+                <p className="text-center text-lg font-medium text-gray-800 hidden sm:block">
                   {contact.name}
                 </p>
+                <p className="text-sm text-gray-600 sm:hidden font-medium text-center py-2">
+                  <span className="flex gap-3 items-center justify-center">
+                    <span>{contact.name}</span>
+                    <span>{contact.email}</span>
+                    <span>{contact.phone}</span>
+                  </span>
+                </p>
 
-                <p className="text-center text-gray-600">{contact.email}</p>
+                {/* Email */}
+                <p className="text-center text-gray-600 hidden sm:block">
+                  {contact.email}
+                </p>
 
-                <p className="text-center text-gray-600">{contact.phone}</p>
+                {/* Phone */}
+                <p className="text-center text-gray-600 hidden sm:block">
+                  {contact.phone}
+                </p>
 
+                {/* Actions */}
                 <div className="flex justify-center space-x-4">
                   <span onClick={() => editContact(contact)}>
-                    <AnimatedButton icon={FiEdit} name="Edit" />
+                    <FiEdit className="text-blue-500 hover:text-blue-700 cursor-pointer text-xl" />
                   </span>
                   <span onClick={() => handleDeleteClick(contact?._id)}>
-                    <AnimatedButton icon={FiTrash} name="Delete" />
+                    <FiTrash className="text-red-500 hover:text-red-700 cursor-pointer text-xl" />
                   </span>
                 </div>
               </div>
@@ -173,8 +188,8 @@ const Dashboard = ({ onLogout }) => {
           ) : (
             <div className="flex justify-center items-center">
               <img
-                src="https://lh5.googleusercontent.com/proxy/wdw47cv6IDrBTf8RdQd1XpJdcsBHT1sk2TZzfbg_HX3Lm3ZKZUTs0JFRKD8w5URBu0bQZAqF4tCheQ"
-                alt={"no data found"}
+                src="https://via.placeholder.com/300"
+                alt={"No data found"}
                 className="h-80 w-96 object-cover"
               />
             </div>
