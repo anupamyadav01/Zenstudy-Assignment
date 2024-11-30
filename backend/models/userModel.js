@@ -14,6 +14,9 @@ const contactSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  image: {
+    type: String,
+  },
 });
 
 // Main user schema

@@ -3,6 +3,7 @@ import { UserModel } from "../models/userModel.js";
 export const addContact = async (req, res) => {
   const { name, email, phone } = req.body;
   const user = req.user;
+  const imgURL = req.secure_url;
 
   try {
     // validate inputs
@@ -11,7 +12,7 @@ export const addContact = async (req, res) => {
     }
     const newContact = await UserModel.findByIdAndUpdate(
       user._id,
-      { $push: { contacts: { name, email, phone } } },
+      { $push: { contacts: { name, email, phone, image: imgURL || "" } } },
       { new: true }
     );
     res.status(201).json({ message: "Contact added successfully" });

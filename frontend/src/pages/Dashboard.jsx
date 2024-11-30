@@ -35,6 +35,9 @@ const Dashboard = ({ onLogout }) => {
     };
     fetchContacts();
   }, []);
+
+  console.log(contacts);
+
   return (
     <div className="min-h-screen bg-gray-100">
       <Header user={user} onLogout={onLogout} />

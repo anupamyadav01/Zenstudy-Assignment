@@ -19,7 +19,14 @@ const AddContact = ({ setShowAddContact }) => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    setContact({ ...contact, image: file ? URL.createObjectURL(file) : "" });
+    console.log(file);
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setContact({ ...contact, image: e.target.result });
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -50,6 +57,8 @@ const AddContact = ({ setShowAddContact }) => {
     visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.5 } },
     exit: { opacity: 0, scale: 0.9, y: -50, transition: { duration: 0.3 } },
   };
+
+  console.log(contact);
 
   return (
     <motion.div
