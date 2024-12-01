@@ -6,7 +6,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { LoggedInUserContext } from "../../App";
 import axiosInstance from "../../../axiosConfig";
 
-const Header = ({ onLogout }) => {
+const Header = () => {
   const { loggedInUser } = useContext(LoggedInUserContext);
   const navigate = useNavigate();
 

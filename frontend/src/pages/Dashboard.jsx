@@ -5,7 +5,7 @@ import Header from "../components/Dashboard/Header";
 import { FaPlus } from "react-icons/fa";
 import { FiEdit, FiTrash } from "react-icons/fi";
 import AddContact from "../components/Dashboard/AddContact";
-import axios from "axios";
+import axiosInstance from "../../axiosConfig";
 
 const Dashboard = ({ onLogout }) => {
   const [showAddContact, setShowAddContact] = useState(false);
@@ -26,12 +26,7 @@ const Dashboard = ({ onLogout }) => {
   useEffect(() => {
     const fetchContacts = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:10000/api/contact/getAllContact",
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axiosInstance.get("/contact/getAllContact");
         setContacts(response?.data);
       } catch (error) {
         console.log("Error getting contacts", error);
@@ -42,12 +37,7 @@ const Dashboard = ({ onLogout }) => {
 
   const deleteContact = async (id) => {
     try {
-      await axios.delete(
-        `http://localhost:10000/api/contact/deleteContact/${id}`,
-        {
-          withCredentials: true,
-        }
-      );
+      await axiosInstance.delete(`/contact/deleteContact/${id}`);
       setContacts(contacts.filter((contact) => contact._id !== id)); // Update state
       setShowDeletePopup(false);
     } catch (error) {
