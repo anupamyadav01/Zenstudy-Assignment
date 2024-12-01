@@ -89,3 +89,13 @@ export const updateContactById = async (req, res) => {
     res.status(500).json({ error: "Unable to update contact, try again." });
   }
 };
+
+export const searchContact = async (req, res) => {
+  const name = req.query;
+  try {
+    console.log(name);
+  } catch (error) {
+    console.log("Error in search contact:", error);
+    res.status(500).json({ error: "Unable to search contact, try again." });
+  }
+};

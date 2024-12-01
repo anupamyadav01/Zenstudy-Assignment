@@ -60,6 +60,8 @@ const Login = () => {
       const response = await axiosInstance.post("/user/login", loginData);
 
       if (response.status === 200) {
+        console.log(response);
+
         setLoggedInUser(response?.data?.user);
         setLoading(false);
         toast.success("User logged in successfully");
@@ -69,7 +71,7 @@ const Login = () => {
     } catch (error) {
       setLoading(false);
       console.log(error);
-      toast.error(error.response.data.message);
+      toast.error(error?.response?.data?.error);
     }
   };
   const handleRegisterUser = async (e) => {

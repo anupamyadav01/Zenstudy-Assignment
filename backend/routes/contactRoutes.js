@@ -3,6 +3,7 @@ import {
   addContact,
   deleteContactById,
   getAllContacts,
+  searchContact,
   updateContactById,
 } from "../controllers/contactController.js";
 import { getUserDetails } from "../middleware/getUserDetails.js";
@@ -17,3 +18,5 @@ contactRoutes.get("/getAllContact", getUserDetails, getAllContacts);
 contactRoutes.delete("/deleteContact/:id", getUserDetails, deleteContactById);
 
 contactRoutes.put("/updateContact/:id", getUserDetails, updateContactById);
+
+contactRoutes.get("/searchContact/:name", getUserDetails, searchContact);

@@ -41,18 +41,17 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
-    // validate email
     if (!email || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return res.status(400).json({ message: "Invalid email format" });
+      return res.status(400).json({ error: "Invalid email format" });
     }
 
     const user = await UserModel.findOne({ email: email });
     if (!user) {
-      return res.status(401).json({ message: "User not found" });
+      return res.status(401).json({ error: "User not found" });
     }
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {

@@ -157,10 +157,12 @@ const Dashboard = ({ onLogout }) => {
                   {contact.name}
                 </p>
                 <p className="text-sm text-gray-600 sm:hidden font-medium text-center py-2">
-                  <span className="flex gap-3 items-center justify-center">
+                  <span className="flex gap-3 items-center justify-center flex-col">
                     <span>{contact.name}</span>
-                    <span>{contact.email}</span>
-                    <span>{contact.phone}</span>
+                    <span className="flex gap-4 mb-2">
+                      <span>{contact.email}</span>
+                      <span>{contact.phone}</span>
+                    </span>
                   </span>
                 </p>
 
