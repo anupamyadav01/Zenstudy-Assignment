@@ -6,8 +6,6 @@ export const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
   const imgURL = req.secure_url;
   try {
-    console.log(req.body);
-
     if (!name || !email || !password) {
       return res.status(400).send({ message: "All fields are required" });
     }

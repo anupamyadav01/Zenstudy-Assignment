@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useContext, useState } from "react";
 import { FaSearch, FaSignOutAlt } from "react-icons/fa";
-import AnimatedButton from "./AnimatedButton";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { LoggedInUserContext } from "../../App";

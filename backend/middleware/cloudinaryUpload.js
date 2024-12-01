@@ -3,7 +3,6 @@ import { v2 as cloudinary } from "cloudinary";
 export const cloudinaryUpload = async (req, res, next) => {
   const { image } = req.body;
 
-  // Check if image is provided from frontend
   if (!image) {
     console.log("No image provided, skipping Cloudinary upload.");
     return next();
@@ -17,14 +16,12 @@ export const cloudinaryUpload = async (req, res, next) => {
   });
 
   try {
-    // If user already has an image, destroy the old one
     if (req?.user && req.user.image) {
       await cloudinary.uploader.destroy(
         req.user.image.split("/").pop().split(".")[0]
       );
     }
 
-    // Upload new image
     const result = await cloudinary.uploader.upload(image, {
       folder: "zenstudy",
       timeout: 120000,
