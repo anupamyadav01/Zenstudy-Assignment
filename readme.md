@@ -7,10 +7,6 @@
 Welcome to the MERN Stack Contact Management System! A secure and user-friendly with Login and Registration System developed using the MERN stack (MongoDB, Express, React, Node.js). This application provides user authentication and a dynamic dashboard for managing contacts.
 Welcome to the **MERN Stack Contact management System**! 🚀
 
-## Features
-
-A secure and user-friendly with Login and Registration System developed using the **MERN stack** (MongoDB, Express, React, Node.js). This application provides user authentication and a dynamic dashboard for managing contacts.
-
 ## Screenshots
 
 Below are some screenshots of the application:
@@ -45,25 +41,9 @@ Below are some screenshots of the application:
 ![Sign In Profile Page Screenshot](./frontend/src/assets/screenshots/signup.png)
 ![Sign In Profile Page Screenshot](./frontend/src/assets/screensorts/signup.png)
 
-### User Authentication
-
----
-
-- Register new users with unique email and password.
-- Password hashing using bcrypt for security.
-- Secure authentication using JWT.
-- Access control to ensure only authenticated users can access protected routes.
-
 ## 🎉 **Live Demo**
 
-### Dynamic User Dashboard
-
 👉 [**Click Here**](#) _(Add your live demo link here)_
-
-- Add Contacts:
-  - Form to input a contact's name, email, and mobile number.
-
----
 
 ## 🧾 **Table of Contents**
 
@@ -128,17 +108,16 @@ Before you begin, ensure you have the following tools installed:
 
 ### Installing
 
-1. Clone the repository:
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/anupamyadav01/Threads-Clone.git
+   git clone https://github.com/anupamyadav01/Zenstudy-Assignment.git
    ```
 
 1. **Navigate to the project directory:**
 
    ```bash
-   cd Threads-Clone
+   cd Zenstudy-Assignment
    ```
 
 1. **Install backend dependencies:**
