@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Login from "./components/user/Login";
 import Dashboard from "./pages/Dashboard";
 import { createContext, useEffect, useState } from "react";
@@ -29,7 +29,10 @@ const App = () => {
       <LoggedInUserContext.Provider value={{ loggedInUser, setLoggedInUser }}>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route
+            path="/dashboard"
+            element={loggedInUser ? <Dashboard /> : <Navigate to="/" />}
+          />
         </Routes>
       </LoggedInUserContext.Provider>
     </BrowserRouter>
