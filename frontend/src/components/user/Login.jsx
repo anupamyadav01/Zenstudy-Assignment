@@ -20,7 +20,7 @@ import axiosInstance from "../../../axiosConfig";
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -240,6 +240,7 @@ const Login = () => {
               {/* Avatar Section */}
               <Stack
                 direction="column"
+                position={"relative"}
                 alignItems="center"
                 spacing={2}
                 sx={{
@@ -262,6 +263,9 @@ const Login = () => {
                 <IconButton
                   component="label"
                   sx={{
+                    position: "absolute",
+                    bottom: "10px",
+                    right: "10px",
                     backgroundColor: "rgba(255, 255, 255, 0.8)",
                     borderRadius: "50%",
                     boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
