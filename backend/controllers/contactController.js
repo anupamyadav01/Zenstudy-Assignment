@@ -2,23 +2,40 @@ import { UserModel } from "../models/userModel.js";
 
 export const addContact = async (req, res) => {
   const { name, email, phone } = req.body;
-  const user = req.user;
-  const imgURL = req.secure_url;
+  const user = req.user; // Assuming `req.user` is populated by middleware (e.g., JWT auth)
+  const imgURL = req.secure_url || ""; // Default to an empty string if no URL is provided
 
   try {
-    // validate inputs
+    // Validate inputs
     if (!name || !email || !phone) {
-      return res.status(400).json({ message: "All fields are required" });
+      return res.status(400).json({ error: "All fields are required" });
     }
-    const newContact = await UserModel.findByIdAndUpdate(
+
+    // Check if email or phone already exists in the user's contacts
+    const existingContact = await UserModel.findOne({
+      _id: user._id,
+      contacts: { $elemMatch: { $or: [{ email }, { phone }] } },
+    });
+
+    if (existingContact) {
+      return res.status(409).json({
+        error: "Contact with this email or phone number already exists.",
+      });
+    }
+
+    // Add the new contact to the user's contacts array
+    await UserModel.findByIdAndUpdate(
       user._id,
-      { $push: { contacts: { name, email, phone, image: imgURL || "" } } },
-      { new: true }
+      { $push: { contacts: { name, email, phone, image: imgURL } } },
+      { new: true, useFindAndModify: false }
     );
-    res.status(201).json({ message: "Contact added successfully" });
+
+    res.status(201).json({ message: "Contact added successfully." });
   } catch (error) {
-    console.log("Error in add contact", error);
-    res.status(500).json({ error: "Unable to add contact, try again." });
+    console.error("Error adding contact:", error.message);
+    res
+      .status(500)
+      .json({ error: "Unable to add contact, please try again later." });
   }
 };
 

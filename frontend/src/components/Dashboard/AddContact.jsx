@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FiX } from "react-icons/fi";
 import axiosInstance from "../../../axiosConfig";
+import toast from "react-hot-toast";
 
 const AddContact = ({
   setShowAddContact,
@@ -16,20 +17,59 @@ const AddContact = ({
     image: "",
   });
 
+  const [errors, setErrors] = useState({
+    email: "",
+    phone: "",
+  });
+
   useEffect(() => {
     if (selectedContact) {
       setContact(selectedContact);
     }
   }, [selectedContact]);
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePhone = (phone) => {
+    const phoneRegex = /^\d{10}$/;
+    return phoneRegex.test(phone);
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
+    // Validate email
+    if (name === "email") {
+      if (!validateEmail(value)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          email: "Please enter a valid email address.",
+        }));
+      } else {
+        setErrors((prevErrors) => ({ ...prevErrors, email: "" }));
+      }
+    }
+
+    // Validate phone
+    if (name === "phone") {
+      if (!validatePhone(value)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          phone: "Phone number must be 10 digits.",
+        }));
+      } else {
+        setErrors((prevErrors) => ({ ...prevErrors, phone: "" }));
+      }
+    }
+
     setContact({ ...contact, [name]: value });
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    console.log(file);
     if (file && file.type.startsWith("image/")) {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -41,27 +81,36 @@ const AddContact = ({
 
   const addContact = async (e) => {
     e.preventDefault();
-    console.log("Submit");
+    if (errors.email || errors.phone) {
+      toast.error("Please fix validation errors before submitting.");
+      return;
+    }
 
     try {
       const response = await axiosInstance.post(`/contact/addContact`, contact);
-      console.log(response);
-      setContact({ name: "", email: "", phone: "", image: "" });
+      if (response.status === 201) {
+        toast.success("Contact added successfully");
+        setShowAddContact(false);
+        setContact({ name: "", email: "", phone: "", image: "" });
+      }
     } catch (error) {
       console.error("Error adding contact:", error);
+      toast.error(error?.response?.data?.error || "An error occurred.");
     }
   };
 
   const updateContact = async (e) => {
     e.preventDefault();
-    console.log("Update");
+    if (errors.email || errors.phone) {
+      toast.error("Please fix validation errors before submitting.");
+      return;
+    }
 
     try {
       const response = await axiosInstance.put(
         `/contact/updateContact/${selectedContact._id}`,
         contact
       );
-      console.log(response);
       setContact({ name: "", email: "", phone: "", image: "" });
       setSelectedContact(null);
       setShowAddContact(false);
@@ -142,10 +191,17 @@ const AddContact = ({
             name="email"
             value={contact.email}
             onChange={handleInputChange}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-violet-500"
+            className={`w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 ${
+              errors.email
+                ? "border-red-500 focus:ring-red-500"
+                : "border-gray-300 focus:ring-violet-500"
+            }`}
             placeholder="Enter email"
             required
           />
+          {errors.email && (
+            <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+          )}
         </div>
 
         {/* Phone */}
@@ -162,10 +218,17 @@ const AddContact = ({
             name="phone"
             value={contact.phone}
             onChange={handleInputChange}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-violet-500"
+            className={`w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 ${
+              errors.phone
+                ? "border-red-500 focus:ring-red-500"
+                : "border-gray-300 focus:ring-violet-500"
+            }`}
             placeholder="Enter phone number"
             required
           />
+          {errors.phone && (
+            <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+          )}
         </div>
 
         {/* Image Upload */}

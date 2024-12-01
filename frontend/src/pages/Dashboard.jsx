@@ -38,7 +38,7 @@ const Dashboard = ({ onLogout }) => {
   const deleteContact = async (id) => {
     try {
       await axiosInstance.delete(`/contact/deleteContact/${id}`);
-      setContacts(contacts.filter((contact) => contact._id !== id)); // Update state
+      setContacts(contacts.filter((contact) => contact._id !== id));
       setShowDeletePopup(false);
     } catch (error) {
       console.log("Error deleting contact", error);
@@ -109,7 +109,7 @@ const Dashboard = ({ onLogout }) => {
         </section>
 
         <section className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold text-gray-700 text-center">
+          <h2 className="text-xl   sm:text-3xl font-semibold text-gray-700 text-center">
             Your Contacts
           </h2>
           <div onClick={toggleAddContact}>
@@ -136,7 +136,10 @@ const Dashboard = ({ onLogout }) => {
               >
                 <div className="flex justify-center">
                   <img
-                    src={contact.image}
+                    src={
+                      contact?.image ||
+                      "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg"
+                    }
                     alt={contact.name}
                     className="h-16 w-16 rounded-full object-cover"
                   />
@@ -180,9 +183,9 @@ const Dashboard = ({ onLogout }) => {
           ) : (
             <div className="flex justify-center items-center">
               <img
-                src="https://via.placeholder.com/300"
+                src="https://img.freepik.com/premium-vector/flat-vector-no-data-search-error-landing-concept-illustration_939213-964.jpg"
                 alt={"No data found"}
-                className="h-80 w-96 object-cover"
+                className="h-auto w-96 object-cover"
               />
             </div>
           )}

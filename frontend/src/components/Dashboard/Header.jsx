@@ -41,7 +41,10 @@ const Header = () => {
             <Search />
           </div>
           <img
-            src={loggedInUser?.image}
+            src={
+              loggedInUser?.image ||
+              "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg"
+            }
             alt={loggedInUser?.name}
             className="h-10 w-10 sm:h-12 sm:w-12 rounded-full object-cover hover:scale-105 duration-200 ease-out"
           />
