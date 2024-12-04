@@ -2,9 +2,8 @@ import { UserModel } from "../models/userModel.js";
 
 export const addContact = async (req, res) => {
   const { name, email, phone } = req.body;
-  const user = req.user; // Assuming `req.user` is populated by middleware (e.g., JWT auth)
-  const imgURL = req.secure_url || ""; // Default to an empty string if no URL is provided
-
+  const user = req.user;
+  const imgURL = req.secure_url || "";
   try {
     // Validate inputs
     if (!name || !email || !phone) {
@@ -26,8 +25,8 @@ export const addContact = async (req, res) => {
     // Add the new contact to the user's contacts array
     await UserModel.findByIdAndUpdate(
       user._id,
-      { $push: { contacts: { name, email, phone, image: imgURL } } },
-      { new: true, useFindAndModify: false }
+      { $push: { contacts: { name, email, phone, image: imgURL || "" } } },
+      { new: true }
     );
 
     res.status(201).json({ message: "Contact added successfully." });
@@ -99,7 +98,7 @@ export const updateContactById = async (req, res) => {
 
     res.status(200).json({
       message: "Contact updated successfully",
-      updatedUser,
+      updatedUser: updatedUser.contacts.find((cont) => cont.id === id),
     });
   } catch (error) {
     console.error("Error in update contact:", error);
@@ -108,11 +107,23 @@ export const updateContactById = async (req, res) => {
 };
 
 export const searchContact = async (req, res) => {
-  const name = req.query;
+  const name = req.query.name;
+  const user = req.user;
+
   try {
-    console.log(name);
+    const userContacts = await UserModel.findOne({ _id: user._id });
+    if (!userContacts || !userContacts.contacts) {
+      return res.status(404).json({ error: "No contacts found" });
+    }
+    const filteredContacts = userContacts.contacts.filter((contact) =>
+      contact.name.match(new RegExp(name, "i"))
+    );
+    if (filteredContacts.length === 0) {
+      return res.status(404).json({ error: "No contacts found" });
+    }
+    res.status(200).json(filteredContacts);
   } catch (error) {
-    console.log("Error in search contact:", error);
+    console.error("Error in search contact:", error);
     res.status(500).json({ error: "Unable to search contact, try again." });
   }
 };

@@ -60,8 +60,6 @@ const Login = () => {
       const response = await axiosInstance.post("/user/login", loginData);
 
       if (response.status === 200) {
-        console.log(response);
-
         setLoggedInUser(response?.data?.user);
         setLoading(false);
         toast.success("User logged in successfully");

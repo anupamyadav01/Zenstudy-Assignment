@@ -19,4 +19,4 @@ contactRoutes.delete("/deleteContact/:id", getUserDetails, deleteContactById);
 
 contactRoutes.put("/updateContact/:id", getUserDetails, updateContactById);
 
-contactRoutes.get("/searchContact/:name", getUserDetails, searchContact);
+contactRoutes.get("/search", getUserDetails, searchContact);

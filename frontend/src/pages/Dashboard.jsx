@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+/* eslint-disable react/prop-types */
+import { useContext, useState } from "react";
 import { PropTypes } from "prop-types";
 import AnimatedButton from "../components/Dashboard/AnimatedButton";
 import Header from "../components/Dashboard/Header";
@@ -6,34 +7,19 @@ import { FaPlus } from "react-icons/fa";
 import { FiEdit, FiTrash } from "react-icons/fi";
 import AddContact from "../components/Dashboard/AddContact";
 import axiosInstance from "../../axiosConfig";
+import { ContactsContext, LoggedInUserContext } from "../App";
 
 const Dashboard = ({ onLogout }) => {
   const [showAddContact, setShowAddContact] = useState(false);
-  const [contacts, setContacts] = useState([]);
+  const { contacts, setContacts } = useContext(ContactsContext);
   const [selectedContact, setSelectedContact] = useState(null);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [contactToDelete, setContactToDelete] = useState(null);
-
-  const user = {
-    name: "Alice Johnson",
-    image: "https://via.placeholder.com/150",
-  };
+  const { loggedInUser } = useContext(LoggedInUserContext);
 
   const toggleAddContact = () => {
     setShowAddContact(!showAddContact);
   };
-
-  useEffect(() => {
-    const fetchContacts = async () => {
-      try {
-        const response = await axiosInstance.get("/contact/getAllContact");
-        setContacts(response?.data);
-      } catch (error) {
-        console.log("Error getting contacts", error);
-      }
-    };
-    fetchContacts();
-  }, []);
 
   const deleteContact = async (id) => {
     try {
@@ -101,7 +87,7 @@ const Dashboard = ({ onLogout }) => {
 
         <section className="mb-8">
           <h1 className="text-3xl font-bold text-gray-700">
-            Welcome, {user.name}!
+            Welcome, {loggedInUser?.name}!
           </h1>
           <p className="text-gray-600 mt-2 text-lg">
             Manage your contacts efficiently with our dashboard.

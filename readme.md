@@ -1,59 +1,15 @@
-/**\*\***\***\*\*** ✨ Codeium Command 🌟 **\*\***\***\*\***/
-
-# MERN Stack Contact Management System
-
 # 🌟 **Contact management System** 🌟
 
-Welcome to the MERN Stack Contact Management System! A secure and user-friendly with Login and Registration System developed using the MERN stack (MongoDB, Express, React, Node.js). This application provides user authentication and a dynamic dashboard for managing contacts.
+Welcome to the MERN Stack Contact Management System! A secure and user-friendly with Login and Registration System developed using the MERN stack (MongoDB, Express, React, Node.js). This application provide s user authentication and a dynamic dashboard for managing contacts.
 Welcome to the **MERN Stack Contact management System**! 🚀
-
-## Screenshots
-
-Below are some screenshots of the application:
-
-### 1. Homepage
-
-![Homepage Screenshot](./frontend/src/assets/screenshots/feeds.png)
-![Homepage Screenshot](./frontend/src/assets/screensorts/feeds.png)
-
-### 2. User Profile Page
-
-![User Profile Page Screenshot](./frontend/src/assets/screenshots/profile.png)
-![User Profile Page Screenshot](./frontend/src/assets/screensorts/profile.png)
-
-### 3. Post Details Page
-
-![Post Details Page Screenshot](./frontend/src/assets/screenshots/postdetails.png)
-![Post Details Page Screenshot](./frontend/src/assets/screensorts/postdetails.png)
-
-### 4. Chat Page
-
-![Chat Page Screenshot](./frontend/src/assets/screenshots/chat.png)
-![Chat Page Screenshot](./frontend/src/assets/screensorts/chat.png)
-
-### 5. Search Page
-
-![Search Page Screenshot](./frontend/src/assets/screenshots/search.png)
-![Search Page Screenshot](./frontend/src/assets/screensorts/search.png)
-
-### 6. Sign In Profile Page
-
-![Sign In Profile Page Screenshot](./frontend/src/assets/screenshots/signup.png)
-![Sign In Profile Page Screenshot](./frontend/src/assets/screensorts/signup.png)
-
-## 🎉 **Live Demo**
-
-👉 [**Click Here**](#) _(Add your live demo link here)_
 
 ## 🧾 **Table of Contents**
 
 - 🔑 [Features](#features)
-- 🖼️ [Screenshots](#screenshots)
 - 🛠️ [Getting Started](#getting-started)
 - 🌐 [API Routes](#api-routes)
 - 🖥️ [Frontend Routes](#frontend-routes)
 - 🔐 [Environment Variables](#environment-variables)
-- 📜 [License](#license)
 
 ---
 

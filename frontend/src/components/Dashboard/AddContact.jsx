@@ -111,6 +111,8 @@ const AddContact = ({
         `/contact/updateContact/${selectedContact._id}`,
         contact
       );
+      console.log(response);
+
       setContact({ name: "", email: "", phone: "", image: "" });
       setSelectedContact(null);
       setShowAddContact(false);
